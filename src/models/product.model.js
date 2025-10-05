@@ -18,6 +18,9 @@ const productSchema=new mongoose.Schema({
         type:Number,
         required:true,
     },
-
+    category:{
+        type:String,
+        required:true
+    }
 },{timestamps:true})
 export const Product=mongoose.model("Product",productSchema)

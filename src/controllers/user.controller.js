@@ -2,6 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { User } from "../models/user.model.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
+const options={
+        httpOnly:true,
+        secure:true
+    }
 const registerUser=asyncHandler(async (req,res)=>{
     const {name,email,phone_no,role,password}=req.body
     if(
@@ -51,11 +55,9 @@ const loginUser=asyncHandler(async (req,res)=>{
         throw new ApiError(401,"invalid user credenrtials")
     }
     const accessToken=await user.generateAccessToken()
-    delete user['password']
-    const options={
-        httpOnly:true,
-        secure:true
-    }
+    
+    const createdUser=user.toObject()
+    delete createdUser.password
     return res
     .status(200)
     .cookie("accessToken",accessToken,options)
@@ -63,7 +65,7 @@ const loginUser=asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             {
-                user,
+                user:createdUser,
                 accessToken
             },
             "user logged in successfully"
@@ -83,3 +85,8 @@ const logoutUser=asyncHandler(async (req,res)=>{
         )
     )
 })
+export {
+    registerUser,
+    loginUser,
+    logoutUser
+}
