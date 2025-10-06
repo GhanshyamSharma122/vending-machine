@@ -2,6 +2,7 @@ import { Product } from "../models/product.model.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
+import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 const addProduct=asyncHandler(async (req,res)=>{
     const {name,vendor,selling_price,buying_price,category}=req.body
@@ -12,8 +13,21 @@ const addProduct=asyncHandler(async (req,res)=>{
             "should provide all the fields to add the product"
         )
     }
+    const frontLocalPath=req.files?.product_front[0]?.path 
+    if(!frontLocalPath){
+        throw new ApiError(
+            400,
+            "product image is required"
+        )
+    }
+    const product_front=await uploadOnCloudinary(frontLocalPath)
+    if(!product_front){
+        throw new ApiError(400,
+            "some error occurred during handling image"
+        )
+    }
     const product=await Product.create(
-        {name,vendor,selling_price,buying_price,category}
+        {name,vendor,selling_price,buying_price,category,product_url:product_front?.url || ""}
     )
     if(!product){
         throw new ApiError(
@@ -21,21 +35,30 @@ const addProduct=asyncHandler(async (req,res)=>{
             "some error occured while adding the product"
         )
     }
-    return res
-    .status(201)
+    return res.
+    status(201)
     .json(
         new ApiResponse(
             201,
             product,
-            "product added successfully"
+            "product added sucessfully"
         )
     )
 })
 const getProduct=asyncHandler(async (req,res)=>{
-
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            product,
+            Product.find(),
+            "all product fetched sucessfully"
+        )
+    )
 })
 const addProductToVending=asyncHandler(async (req,res)=>{
-
+    
 })
 const getProductFromVending=asyncHandler(async (req,res)=>{
 

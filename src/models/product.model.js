@@ -21,6 +21,11 @@ const productSchema=new mongoose.Schema({
     category:{
         type:String,
         required:true
+    },
+    product_front:{
+        type:String,
+        required:true,
+        lowercase:true
     }
 },{timestamps:true})
 export const Product=mongoose.model("Product",productSchema)
