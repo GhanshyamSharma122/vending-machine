@@ -14,6 +14,7 @@ const addProduct=asyncHandler(async (req,res)=>{
         )
     }
     const frontLocalPath=req.files?.product_front[0]?.path 
+    console.log(frontLocalPath)
     if(!frontLocalPath){
         throw new ApiError(
             400,
@@ -27,7 +28,7 @@ const addProduct=asyncHandler(async (req,res)=>{
         )
     }
     const product=await Product.create(
-        {name,vendor,selling_price,buying_price,category,product_url:product_front?.url || ""}
+        {name,vendor,selling_price,buying_price,category,product_front:product_front?.url || ""}
     )
     if(!product){
         throw new ApiError(
@@ -46,13 +47,13 @@ const addProduct=asyncHandler(async (req,res)=>{
     )
 })
 const getProduct=asyncHandler(async (req,res)=>{
+    const allProducts=await Product.find()
     return res
     .status(200)
     .json(
         new ApiResponse(
             200,
-            product,
-            Product.find(),
+            allProducts,
             "all product fetched sucessfully"
         )
     )
@@ -61,7 +62,7 @@ const addProductToVending=asyncHandler(async (req,res)=>{
     
 })
 const getProductFromVending=asyncHandler(async (req,res)=>{
-
+    
 })
 export {
     addProduct,

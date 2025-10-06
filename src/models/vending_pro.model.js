@@ -17,3 +17,4 @@ const vendingProductSchema=new mongoose.Schema({
     }
 
 })
+export const VendingProduct=mongoose.model("VendingProduct",vendingProductSchema)

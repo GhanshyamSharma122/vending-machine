@@ -4,7 +4,7 @@ export const verifyRole=roles=>{
         if(roles.includes(req.user.role)){
             next()
         }else{
-            throw new ApiError(401,`${role} cannot access this api`)
+            throw new ApiError(401,`${req.user.role} cannot access this api`)
         }
     }
 }
